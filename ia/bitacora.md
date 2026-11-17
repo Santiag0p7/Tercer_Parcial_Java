@@ -29,3 +29,8 @@ Registro de interacciones, decisiones y contextos relevantes compartidos con asi
 - **Decisión**: Validaciones en controladores con parámetros simples (sin clases DTO ni service). Protección para que un ADMIN no desactive su propia cuenta ni se quite su rol. Al quitar el último ingrediente de un producto disponible, el producto pasa a no disponible (BR-05). Alerta de stock mínimo como insignia roja "Reponer" (BR-04 define un único estado de alerta). Filtro por tipo en el catálogo (AC-007.2).
 - **Pendiente**: edición de nombre y precio de productos no está implementada (no aparece en los criterios de aceptación del Sprint 1). Verificación visual en navegador pendiente.
 - **Resultado**: `./mvnw test` con 33 pruebas en verde.
+
+### 2026-11-17 — Preparación para despliegue en Render (Docker)
+- **Contexto**: Dockerfile multi-etapa, `.dockerignore` y ADR-002. Se retiraron de `application.properties` el host y el usuario reales de Clever Cloud.
+- **Decisión**: Credenciales por variables `DB_URL`, `DB_USER` y `DB_PASS` (reemplazan a `DB_PASSWORD`). Puerto por `PORT`. Pool de Hikari en 5 conexiones.
+- **Resultado**: `./mvnw test` con 33 pruebas en verde. La imagen Docker no se construyó localmente porque Docker no está instalado en el equipo.
