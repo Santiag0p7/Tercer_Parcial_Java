@@ -4,6 +4,7 @@ import com.caketrack.model.Usuario;
 import com.caketrack.repository.UsuarioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -26,10 +28,14 @@ public class AuthController {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final boolean mostrarEnlace;
 
-    public AuthController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(UsuarioRepository usuarioRepository,
+                          PasswordEncoder passwordEncoder,
+                          @Value("${caketrack.recuperacion.mostrar-enlace:false}") boolean mostrarEnlace) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mostrarEnlace = mostrarEnlace;
     }
 
     @GetMapping("/")
@@ -54,7 +60,7 @@ public class AuthController {
 
     @PostMapping("/recuperar")
     @Transactional
-    public String solicitarRecuperacion(@RequestParam String correo) {
+    public String solicitarRecuperacion(@RequestParam String correo, RedirectAttributes redirect) {
         usuarioRepository.findByCorreo(correo)
                 .filter(Usuario::isActivo)
                 .ifPresent(usuario -> {
@@ -62,6 +68,9 @@ public class AuthController {
                     usuario.generarTokenRecuperacion(token, LocalDateTime.now());
                     usuarioRepository.save(usuario);
                     log.info("Enlace de recuperación para {}: /restablecer?token={}", correo, token);
+                    if (mostrarEnlace) {
+                        redirect.addFlashAttribute("enlaceRecuperacion", "/restablecer?token=" + token);
+                    }
                 });
         return "redirect:/recuperar?enviado";
     }

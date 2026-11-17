@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -22,6 +24,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class AuthSecurityTest {
+
+    private static final String NUEVA_PASSWORD = "NuevaClave123";
 
     private static final String PASSWORD = "Password123!";
 
@@ -42,12 +48,12 @@ class AuthSecurityTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private void crearUsuario(String correo, Rol rol, boolean activo) {
+    private Usuario crearUsuario(String correo, Rol rol, boolean activo) {
         Usuario usuario = new Usuario("Usuario de prueba", correo, passwordEncoder.encode(PASSWORD), rol);
         if (!activo) {
             usuario.desactivar();
         }
-        usuarioRepository.save(usuario);
+        return usuarioRepository.save(usuario);
     }
 
     @Test
@@ -127,6 +133,55 @@ class AuthSecurityTest {
 
         assertTrue(usuario.tokenValido(generacion.plusMinutes(29).plusSeconds(59)));
         assertTrue(usuario.tokenExpirado(generacion.plusMinutes(30)));
+    }
+
+    @Test
+    void enlaceDeRecuperacionSeMuestraCuandoEstaHabilitado() throws Exception {
+        crearUsuario("pantalla@caketrack.com", Rol.CLIENTE, true);
+
+        mockMvc.perform(post("/recuperar").with(csrf())
+                        .param("correo", "pantalla@caketrack.com"))
+                .andExpect(redirectedUrl("/recuperar?enviado"))
+                .andExpect(flash().attribute("enlaceRecuperacion", startsWith("/restablecer?token=")));
+    }
+
+    @Test
+    void restablecerConTokenValidoCambiaLaPasswordYNoSePuedeReutilizar() throws Exception {
+        Usuario usuario = crearUsuario("reutiliza@caketrack.com", Rol.CLIENTE, true);
+        usuario.generarTokenRecuperacion("token-valido", LocalDateTime.now());
+
+        mockMvc.perform(post("/restablecer").with(csrf())
+                        .param("token", "token-valido")
+                        .param("password", NUEVA_PASSWORD)
+                        .param("confirmacion", NUEVA_PASSWORD))
+                .andExpect(redirectedUrl("/login?restablecido"));
+        assertTrue(passwordEncoder.matches(NUEVA_PASSWORD, usuario.getPassword()));
+
+        mockMvc.perform(post("/restablecer").with(csrf())
+                        .param("token", "token-valido")
+                        .param("password", "OtraClave123")
+                        .param("confirmacion", "OtraClave123"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("ha expirado o ya fue utilizado")));
+        assertTrue(passwordEncoder.matches(NUEVA_PASSWORD, usuario.getPassword()));
+    }
+
+    @Test
+    void tokenVencidoNoPermiteCambiarLaPassword() throws Exception {
+        Usuario usuario = crearUsuario("vencido@caketrack.com", Rol.CLIENTE, true);
+        usuario.generarTokenRecuperacion("token-vencido", LocalDateTime.now().minusMinutes(31));
+
+        mockMvc.perform(get("/restablecer").param("token", "token-vencido"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("ha expirado o ya fue utilizado")));
+
+        mockMvc.perform(post("/restablecer").with(csrf())
+                        .param("token", "token-vencido")
+                        .param("password", NUEVA_PASSWORD)
+                        .param("confirmacion", NUEVA_PASSWORD))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("ha expirado o ya fue utilizado")));
+        assertTrue(passwordEncoder.matches(PASSWORD, usuario.getPassword()));
     }
 
     @Test

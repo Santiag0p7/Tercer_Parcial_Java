@@ -1,0 +1,428 @@
+/* CakeTrack: sistema visual adaptado de DESIGN.md (Redbrick Style Reference).
+   Especificación completa en /specs/design.md. */
+
+:root {
+  /* Colores */
+  --color-brick-red: #e82c2a;
+  --color-press-black: #212529;
+  --color-cream-white: #ffffff;
+  --color-soft-grey: #f2f2f2;
+  --color-carbon: #121212;
+
+  /* Familias tipográficas (sustitutos de Google Fonts) */
+  --font-surt: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-editorial-old: 'Playfair Display', Georgia, serif;
+  --font-gtstandard-m: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Escala tipográfica */
+  --text-caption: 10px;
+  --text-body-sm: 15px;
+  --text-body: 20px;
+  --text-subheading: 30px;
+  --text-heading-sm: 35px;
+
+  /* Tracking */
+  --tracking-caption: 0.06em;
+  --tracking-body-sm: 0.013em;
+  --tracking-body: 0.017em;
+  --tracking-subheading: 0.03em;
+  --tracking-heading-sm: 0.04em;
+  --tracking-display: -0.005em;
+
+  /* Espaciado */
+  --spacing-5: 5px;
+  --spacing-8: 8px;
+  --spacing-10: 10px;
+  --spacing-20: 20px;
+  --spacing-30: 30px;
+  --spacing-50: 50px;
+
+  /* Radios de borde */
+  --radius-links: 3.75px;
+  --radius-cards: 25px;
+  --radius-images: 25px;
+  --radius-inputs: 50px;
+  --radius-buttons: 50px;
+
+  /* Layout */
+  --section-gap: 50px;
+  --card-padding: 30px;
+  --element-gap: 10px;
+
+  /* Variables de Bootstrap 5 */
+  --bs-body-font-family: var(--font-surt);
+  --bs-body-font-size: 15px;
+  --bs-body-color: #212529;
+  --bs-body-bg: #ffffff;
+  --bs-primary: #e82c2a;
+  --bs-primary-rgb: 232, 44, 42;
+  --bs-link-color: #e82c2a;
+  --bs-link-color-rgb: 232, 44, 42;
+  --bs-link-hover-color: #e82c2a;
+  --bs-border-color: #e82c2a;
+  --bs-border-radius: 3.75px;
+  --bs-border-radius-lg: 25px;
+  --bs-border-radius-pill: 50px;
+}
+
+/* Base */
+body {
+  font-family: var(--font-surt);
+  font-size: var(--text-body-sm);
+  line-height: 1.5;
+  letter-spacing: var(--tracking-body-sm);
+  color: var(--color-press-black);
+  background-color: var(--color-cream-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-brick-red);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-brick-red);
+  outline-offset: 3px;
+}
+
+a {
+  color: var(--color-brick-red);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-brick-red);
+  opacity: 0.7;
+}
+
+.bg-light {
+  background-color: var(--color-cream-white) !important;
+}
+
+.shadow,
+.shadow-sm,
+.shadow-lg {
+  box-shadow: none !important;
+}
+
+.fw-bold,
+.fw-semibold {
+  font-weight: 400 !important;
+}
+
+.text-primary,
+.text-danger {
+  color: var(--color-brick-red) !important;
+}
+
+/* Títulos editoriales (display): peso 300, nunca negrita */
+main h1,
+main .h1,
+main .h3,
+main .h4 {
+  font-family: var(--font-editorial-old);
+  font-weight: 300 !important;
+  font-size: var(--text-heading-sm);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-display);
+  color: var(--color-brick-red);
+}
+
+/* Anuncio superior (barra roja a todo el ancho) */
+.caketrack-anuncio {
+  background-color: var(--color-brick-red);
+  color: #ffffff;
+  font-family: var(--font-gtstandard-m);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  line-height: 1.5;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 6px 15px;
+}
+
+/* Barra de navegación: fondo blanco, texto rojo, filete inferior de 1px */
+.caketrack-navbar {
+  background-color: var(--color-cream-white);
+  border-bottom: 1px solid var(--color-brick-red);
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.caketrack-navbar .navbar-brand {
+  color: var(--color-brick-red);
+  font-family: var(--font-surt);
+  font-size: var(--text-body);
+  font-weight: 400;
+  letter-spacing: var(--tracking-body);
+}
+
+.caketrack-navbar .nav-link {
+  color: var(--color-brick-red);
+  font-size: var(--text-body-sm);
+  letter-spacing: var(--tracking-body-sm);
+  padding: 0.5rem 15px;
+}
+
+.caketrack-navbar .nav-link:hover,
+.caketrack-navbar .nav-link:focus {
+  color: var(--color-brick-red);
+  opacity: 0.7;
+}
+
+.caketrack-navbar .navbar-toggler {
+  border: 1px solid var(--color-brick-red);
+  border-radius: var(--radius-links);
+}
+
+/* Pie de página: panel carbón */
+.caketrack-pie {
+  background-color: var(--color-carbon);
+  color: #ffffff;
+  font-family: var(--font-gtstandard-m);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+}
+
+/* Botones: solo contorno rojo de 1px, sin relleno */
+.btn {
+  font-family: var(--font-surt);
+  font-size: var(--text-body-sm);
+  letter-spacing: var(--tracking-body-sm);
+  line-height: 1.5;
+  padding: 10px 20px;
+  border: 1px solid var(--color-brick-red);
+  border-radius: var(--radius-buttons);
+  background-color: transparent;
+  color: var(--color-brick-red);
+  box-shadow: none;
+  transition: opacity 0.2s ease;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active {
+  background-color: transparent;
+  color: var(--color-brick-red);
+  border-color: var(--color-brick-red);
+  box-shadow: none;
+}
+
+.btn:hover {
+  opacity: 0.7;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+}
+
+.btn-sm {
+  padding: 6px 15px;
+  font-size: 13px;
+}
+
+.btn-success,
+.btn-outline-success,
+.btn-dark,
+.btn-outline-dark {
+  border-color: var(--color-carbon);
+  color: var(--color-carbon);
+}
+
+.btn-success:hover,
+.btn-outline-success:hover,
+.btn-dark:hover,
+.btn-outline-dark:hover {
+  border-color: var(--color-carbon);
+  color: var(--color-carbon);
+}
+
+.btn-dark {
+  text-decoration: underline;
+}
+
+.btn-link {
+  border: 0;
+  padding: 0;
+  border-radius: var(--radius-links);
+  text-decoration: none;
+}
+
+/* Formularios */
+.form-label {
+  font-family: var(--font-gtstandard-m);
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--color-brick-red);
+  margin-bottom: var(--spacing-5);
+}
+
+.form-control,
+.form-select {
+  font-size: var(--text-body-sm);
+  letter-spacing: var(--tracking-body-sm);
+  color: var(--color-press-black);
+  background-color: #ffffff;
+  border: 1px solid var(--color-brick-red);
+  border-radius: var(--radius-inputs);
+  padding: 10px 20px;
+}
+
+textarea.form-control {
+  border-radius: var(--radius-cards);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-brick-red);
+  box-shadow: none;
+}
+
+.form-control-sm,
+.form-select-sm {
+  padding: 6px 15px;
+  font-size: 13px;
+}
+
+.form-text {
+  font-size: var(--text-caption);
+  letter-spacing: var(--tracking-caption);
+  color: var(--color-press-black);
+}
+
+/* Tarjetas: superficie gris, radio de 25px, sin sombra */
+.card {
+  background-color: var(--color-soft-grey);
+  border: 0;
+  border-radius: var(--radius-cards);
+  box-shadow: none;
+}
+
+.card-body {
+  padding: var(--card-padding);
+}
+
+/* Etiqueta de sección tipo encabezado de revista */
+.card-body > h2:first-child {
+  font-family: var(--font-gtstandard-m);
+  font-size: var(--text-caption);
+  font-weight: 400;
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--color-brick-red);
+  border-bottom: 1px solid var(--color-brick-red);
+  padding-bottom: var(--spacing-8);
+  margin-bottom: var(--spacing-20);
+}
+
+/* Nombres de producto y títulos dentro de tarjetas */
+.card-body h2 {
+  font-size: var(--text-body);
+  font-weight: 400;
+  letter-spacing: var(--tracking-body);
+  color: var(--color-press-black);
+}
+
+/* Tablas */
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: rgba(18, 18, 18, 0.12);
+  --bs-table-hover-bg: #ffffff;
+  font-size: var(--text-body-sm);
+  letter-spacing: var(--tracking-body-sm);
+  color: var(--color-press-black);
+}
+
+.table thead th {
+  font-family: var(--font-gtstandard-m);
+  font-size: var(--text-caption);
+  font-weight: 400;
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  color: var(--color-brick-red);
+  border-bottom: 1px solid var(--color-brick-red);
+}
+
+.table-danger {
+  --bs-table-bg: var(--color-soft-grey);
+  --bs-table-color: var(--color-brick-red);
+}
+
+/* Insignias */
+.badge {
+  font-family: var(--font-gtstandard-m);
+  font-size: var(--text-caption);
+  font-weight: 400;
+  letter-spacing: var(--tracking-caption);
+  text-transform: uppercase;
+  border-radius: var(--radius-buttons);
+  padding: 5px 10px;
+}
+
+.bg-danger {
+  background-color: var(--color-brick-red) !important;
+  color: #ffffff !important;
+}
+
+.bg-success {
+  background-color: var(--color-carbon) !important;
+  color: #ffffff !important;
+}
+
+.bg-secondary {
+  background-color: var(--color-soft-grey) !important;
+  color: var(--color-press-black) !important;
+}
+
+.bg-info {
+  background-color: #ffffff !important;
+  color: var(--color-brick-red) !important;
+  border: 1px solid var(--color-brick-red);
+}
+
+/* Alertas */
+.alert {
+  font-size: var(--text-body-sm);
+  letter-spacing: var(--tracking-body-sm);
+  border: 1px solid var(--color-brick-red);
+  border-radius: var(--radius-cards);
+  background-color: #ffffff;
+  color: var(--color-press-black);
+}
+
+.alert-danger {
+  color: var(--color-brick-red);
+}
+
+.alert-success {
+  border-color: var(--color-carbon);
+  color: var(--color-carbon);
+}
+
+.alert-warning {
+  background-color: var(--color-soft-grey);
+}
+
+.alert-info {
+  background-color: var(--color-soft-grey);
+  border-color: var(--color-carbon);
+}
+
+.alert-light {
+  background-color: var(--color-soft-grey);
+  border-color: transparent;
+}
+
+/* Responsivo: títulos más pequeños en móvil */
+@media (max-width: 575.98px) {
+  main h1,
+  main .h1,
+  main .h3,
+  main .h4 {
+    font-size: var(--text-subheading);
+  }
+}

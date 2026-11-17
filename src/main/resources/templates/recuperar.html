@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head('Recuperar contraseña')}"></head>
 <body class="bg-light">
+<div th:replace="~{fragments/layout :: anuncio}"></div>
 <main class="container py-5">
     <div class="row justify-content-center">
         <div class="col-12 col-sm-8 col-md-5 col-lg-4">
@@ -11,6 +12,11 @@
 
                     <div class="alert alert-info" th:if="${param.enviado}">
                         Si el correo existe, recibirás instrucciones de recuperación
+                    </div>
+
+                    <div class="alert alert-warning" th:if="${enlaceRecuperacion}">
+                        <strong>Modo de prueba:</strong> enlace de recuperación:
+                        <a th:href="@{${enlaceRecuperacion}}" th:text="${enlaceRecuperacion}">enlace</a>
                     </div>
 
                     <form th:action="@{/recuperar}" method="post">

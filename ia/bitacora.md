@@ -34,3 +34,14 @@ Registro de interacciones, decisiones y contextos relevantes compartidos con asi
 - **Contexto**: Dockerfile multi-etapa, `.dockerignore` y ADR-002. Se retiraron de `application.properties` el host y el usuario reales de Clever Cloud.
 - **Decisión**: Credenciales por variables `DB_URL`, `DB_USER` y `DB_PASS` (reemplazan a `DB_PASSWORD`). Puerto por `PORT`. Pool de Hikari en 5 conexiones.
 - **Resultado**: `./mvnw test` con 33 pruebas en verde. La imagen Docker no se construyó localmente porque Docker no está instalado en el equipo.
+
+### 2026-11-17 — H2 modo de prueba: enlace de recuperación en pantalla
+- **Contexto**: El enlace de recuperación solo quedaba en el log. Se agregó un modo de prueba que lo muestra en la página de recuperación, y se añadieron pruebas para AC-002.3 y AC-002.4.
+- **Decisión**: `caketrack.recuperacion.mostrar-enlace` viene apagado por defecto (`MOSTRAR_ENLACE_RECUPERACION`). Si está encendido, revela si un correo existe, así que no debe usarse en producción. Perfil `test` activado desde `pom.xml` (surefire) con pool de 1 conexión para respetar el límite de Clever Cloud.
+- **Pendiente**: envío real de correo (requiere dependencia nueva y ADR).
+- **Resultado**: `./mvnw test` con 36 pruebas en verde.
+
+### 2026-11-17 — Sistema visual de la guía de diseño (DESIGN.md)
+- **Contexto**: Se tomó `Downloads/DESIGN.md` como guía oficial de UI/UX. Se consolidó en `specs/design.md`, se implementó en `static/css/caketrack.css` y se aplicó a las vistas del Sprint 1.
+- **Decisión**: Fuentes sustitutas de Google Fonts (Inter, Playfair Display, JetBrains Mono). Botones solo en contorno rojo, según la guía. Sin sombras. Se agregó el anuncio superior en las vistas. Contraste del rojo sobre blanco: 4.35:1, por debajo de 4.5:1 para texto pequeño (documentado en design.md). `AGENTS.md` incluye la regla obligatoria de diseño.
+- **Resultado**: `./mvnw test` con 36 pruebas en verde. No se modificaron atributos `th:*`, `sec:authorize` ni `name` de formularios. Verificación visual en navegador pendiente.

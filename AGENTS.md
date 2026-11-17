@@ -57,6 +57,13 @@ Las reglas de negocio se implementan en:
 - `@Controller` retorna nombre de plantilla Thymeleaf
 - Vistas renderizadas en servidor con Bootstrap 5
 
+## Diseño visual (obligatorio)
+
+- Toda vista HTML/Thymeleaf nueva o modificada debe consultar `/specs/design.md` antes de implementarse.
+- Usar los estilos de `/css/caketrack.css` y sus tokens en `:root`. No introducir colores, fuentes, radios ni sombras fuera de esos tokens.
+- Las acciones son contornos rojos de 1px, sin relleno. No usar sombras.
+- Al cambiar estilos, no alterar atributos `th:*`, `sec:authorize` ni los `name` de los formularios.
+
 ## Documentos de Gobierno
 
 - **Constitución**: `/specs/constitution.md` (7 principios no negociables)

@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/layout :: head('Inicio')}"></head>
 <body class="bg-light">
+<div th:replace="~{fragments/layout :: anuncio}"></div>
 <div th:replace="~{fragments/layout :: navbar}"></div>
 <main class="container py-4">
     <h1 class="h3">Bienvenido, <span th:text="${#authentication.name}">usuario</span></h1>
