@@ -21,7 +21,7 @@ T001 → T002 → T003 [prueba] → T004 → T005 [prueba] → T006 → T007 [pr
 
 ### Infraestructura y Datos Base
 
-- [ ] **T001** `[Sprint Setup]` Configurar `application.properties` (MySQL, Thymeleaf, mensajes i18n) y crear `DataInitializer.java` en `com.caketrack.config` que poble al iniciar la aplicación 1 usuario de prueba por cada uno de los 5 roles (CLIENTE, CAJERO, PASTELERO, REPARTIDOR, ADMIN) con contraseñas BCrypt.
+- [x] **T001** `[Sprint Setup]` Configurar `application.properties` (MySQL, Thymeleaf, mensajes i18n) y crear `DataInitializer.java` en `com.caketrack.config` que poble al iniciar la aplicación 1 usuario de prueba por cada uno de los 5 roles (CLIENTE, CAJERO, PASTELERO, REPARTIDOR, ADMIN) con contraseñas BCrypt.
   - **Archivo**: `src/main/resources/application.properties`, `src/main/resources/messages.properties`, `src/main/java/com/caketrack/config/DataInitializer.java`
   - **Dependencias**: Ninguna (primera tarea)
   - **Criterios de aceptación**: `AC-003.1` (contraseñas BCrypt), verificación de 5 usuarios con roles correctos en base de datos al iniciar la aplicación.
@@ -31,7 +31,7 @@ T001 → T002 → T003 [prueba] → T004 → T005 [prueba] → T006 → T007 [pr
 
 ### Modelo de Datos y Repositorios
 
-- [ ] **T002** `[HU-01 a HU-07]` Crear entidades JPA (`Usuario`, `Ingrediente`, `Producto`, `RecetaItem`) en `com.caketrack.model` y el enum `Rol` con los 5 perfiles. Crear interfaces `JpaRepository` correspondientes en `com.caketrack.repository`. Incluir métodos de dominio en entidades: `Usuario.esActivo()`, `Usuario.tokenExpirado()`, `Ingrediente.esAlertaReposicion()`, `Producto.puedeMarcarDisponible()`.
+- [x] **T002** `[HU-01 a HU-07]` Crear entidades JPA (`Usuario`, `Ingrediente`, `Producto`, `RecetaItem`) en `com.caketrack.model` y el enum `Rol` con los 5 perfiles (más `TipoProducto` con `TORTA` y `POSTRE`, requerido por `productos.tipo`). Crear interfaces `JpaRepository` correspondientes en `com.caketrack.repository`. Incluir métodos de dominio en entidades: `Usuario.isActivo()`, `Usuario.tokenExpirado(LocalDateTime)`, `Ingrediente.isBajoStockMinimo()`, `Producto.marcarDisponible()` (BR-05) e `Producto.isDisponibleReal()`.
   - **Archivos**: `src/main/java/com/caketrack/model/Rol.java`, `src/main/java/com/caketrack/model/Usuario.java`, `src/main/java/com/caketrack/model/Ingrediente.java`, `src/main/java/com/caketrack/model/Producto.java`, `src/main/java/com/caketrack/model/RecetaItem.java`, `src/main/java/com/caketrack/repository/UsuarioRepository.java`, `src/main/java/com/caketrack/repository/IngredienteRepository.java`, `src/main/java/com/caketrack/repository/ProductoRepository.java`, `src/main/java/com/caketrack/repository/RecetaItemRepository.java`
   - **Dependencias**: T001
   - **Criterios de aceptación**: `BR-01` (contraseña BCrypt en `Usuario`), `BR-02` (`esActivo()`), `BR-03` (`tokenExpirado()`), `BR-04` (`esAlertaReposicion()`), `BR-05` (`puedeMarcarDisponible()` requiere ≥1 `RecetaItem`).
