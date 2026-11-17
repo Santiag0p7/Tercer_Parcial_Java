@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "productos")
@@ -75,7 +76,21 @@ public class Producto {
     }
 
     public void agregarIngrediente(Ingrediente ingrediente, BigDecimal cantidad) {
-        receta.add(new RecetaItem(this, ingrediente, cantidad));
+        Optional<RecetaItem> existente = receta.stream()
+                .filter(item -> item.getIngrediente().equals(ingrediente))
+                .findFirst();
+        if (existente.isPresent()) {
+            existente.get().cambiarCantidad(cantidad);
+        } else {
+            receta.add(new RecetaItem(this, ingrediente, cantidad));
+        }
+    }
+
+    public void quitarIngrediente(Ingrediente ingrediente) {
+        receta.removeIf(item -> item.getIngrediente().equals(ingrediente));
+        if (!tieneReceta()) {
+            this.disponible = false;
+        }
     }
 
     public boolean tieneReceta() {

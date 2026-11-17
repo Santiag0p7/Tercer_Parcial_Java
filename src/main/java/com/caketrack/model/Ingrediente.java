@@ -67,8 +67,11 @@ public class Ingrediente {
         this.stockMinimo = stockMinimo;
     }
 
-    public void actualizarCantidad(BigDecimal nuevaCantidad) {
-        this.cantidadActual = nuevaCantidad;
+    public void actualizar(String nombre, String unidadMedida, BigDecimal cantidadActual, BigDecimal stockMinimo) {
+        this.nombre = nombre;
+        this.unidadMedida = unidadMedida;
+        this.cantidadActual = cantidadActual;
+        this.stockMinimo = stockMinimo;
     }
 
     public boolean isBajoStockMinimo() {

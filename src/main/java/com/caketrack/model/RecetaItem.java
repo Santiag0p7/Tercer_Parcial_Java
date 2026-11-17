@@ -51,4 +51,8 @@ public class RecetaItem {
         this.ingrediente = ingrediente;
         this.cantidad = cantidad;
     }
+
+    public void cambiarCantidad(BigDecimal nuevaCantidad) {
+        this.cantidad = nuevaCantidad;
+    }
 }

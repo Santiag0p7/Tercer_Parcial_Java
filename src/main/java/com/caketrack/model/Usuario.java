@@ -80,6 +80,12 @@ public class Usuario {
         this.rol = rol;
     }
 
+    public void actualizarDatos(String nombre, String correo, Rol rol) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.rol = rol;
+    }
+
     public void activar() {
         this.activo = true;
     }

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Usuarios')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container py-4">
+    <h1 class="h3 mb-3">Gestión de usuarios</h1>
+
+    <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}">Mensaje</div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}">Error</div>
+
+    <div class="row g-4">
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 mb-3" th:text="${edicion} ? 'Editar usuario' : 'Nuevo usuario'">Nuevo usuario</h2>
+
+                    <form th:unless="${edicion}" th:action="@{/admin/usuarios/crear}" method="post">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre"
+                                   th:value="${nombre}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="correo" class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" id="correo" name="correo"
+                                   th:value="${correo}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña inicial</label>
+                            <input type="password" class="form-control" id="password" name="password"
+                                   minlength="8" required>
+                            <div class="form-text">Mínimo 8 caracteres.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rolNuevo" class="form-label">Rol</label>
+                            <select class="form-select" id="rolNuevo" name="rol" required>
+                                <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
+                                        th:selected="${r == rol}">ROL</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Crear usuario</button>
+                    </form>
+
+                    <form th:if="${edicion}" th:action="@{/admin/usuarios/{id}/editar(id=${id})}" method="post">
+                        <div class="mb-3">
+                            <label for="nombreEdit" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombreEdit" name="nombre"
+                                   th:value="${nombre}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="correoEdit" class="form-label">Correo electrónico</label>
+                            <input type="email" class="form-control" id="correoEdit" name="correo"
+                                   th:value="${correo}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rolEdit" class="form-label">Rol</label>
+                            <select class="form-select" id="rolEdit" name="rol" required>
+                                <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
+                                        th:selected="${r == rol}">ROL</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+                        <a class="btn btn-link w-100 mt-2" th:href="@{/admin/usuarios}">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="u : ${usuarios}">
+                            <td th:text="${u.nombre}">Nombre</td>
+                            <td th:text="${u.correo}">correo</td>
+                            <td><span class="badge bg-secondary" th:text="${u.rol}">ROL</span></td>
+                            <td>
+                                <span class="badge bg-success" th:if="${u.activo}">Activo</span>
+                                <span class="badge bg-danger" th:unless="${u.activo}">Inactivo</span>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <a class="btn btn-sm btn-outline-primary"
+                                   th:href="@{/admin/usuarios/{id}/editar(id=${u.id})}">Editar</a>
+                                <form class="d-inline" th:action="@{/admin/usuarios/{id}/toggle-activo(id=${u.id})}"
+                                      method="post">
+                                    <button type="submit" class="btn btn-sm"
+                                            th:classappend="${u.activo} ? 'btn-outline-danger' : 'btn-outline-success'"
+                                            th:text="${u.activo} ? 'Desactivar' : 'Activar'">Desactivar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: pie}"></div>
+</body>
+</html>

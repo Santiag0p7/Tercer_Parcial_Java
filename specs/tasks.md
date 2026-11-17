@@ -57,13 +57,13 @@ T001 → T002 → T003 [prueba] → T004 → T005 [prueba] → T006 → T007 [pr
 
 ### Gestión de Usuarios
 
-- [ ] **T005** `[HU-03]` **[PRUEBA]** Escribir `AdminUsuarioTest.java` con pruebas de: creación de usuario con rol válido y contraseña BCrypt (`AC-003.1`), rechazo de contraseña con menos de 8 caracteres (`AC-003.2`), desactivación de usuario activo (`AC-003.3`) y activación de usuario inactivo (`AC-003.4`).
-  - **Archivo**: `src/test/java/com/caketrack/controller/AdminUsuarioTest.java`
+- [x] **T005** `[HU-03]` **[PRUEBA]** Escribir `AdminUsuarioTest.java` con pruebas de: creación de usuario con rol válido y contraseña BCrypt (`AC-003.1`), rechazo de contraseña con menos de 8 caracteres (`AC-003.2`), desactivación de usuario activo (`AC-003.3`) y activación de usuario inactivo (`AC-003.4`).
+  - **Archivo**: `src/test/java/com/caketrack/AdminUsuarioTest.java`
   - **Dependencias**: T004 (la infraestructura de seguridad ya permite autenticar ADMIN)
   - **Criterios de aceptación**: `AC-003.1`, `AC-003.2`, `AC-003.3`, `AC-003.4` (pruebas en estado **RED**).
   - **Criterio de terminado**: `./mvnw test-compile` compila; pruebas en estado **RED**.
 
-- [ ] **T006** `[HU-03]` Implementar `AdminUsuarioController.java` en `com.caketrack.controller` con rutas `/admin/usuarios`, `/admin/usuarios/crear` y `/admin/usuarios/{id}/toggle-activo`. Crear vista `templates/admin/usuarios.html` con formulario de creación (nombre, correo, contraseña, rol) y tabla de usuarios con botón de toggle activo/inactivo.
+- [x] **T006** `[HU-03]` Implementar `AdminUsuarioController.java` en `com.caketrack.controller` con rutas `/admin/usuarios`, `/admin/usuarios/crear` y `/admin/usuarios/{id}/toggle-activo`. Crear vista `templates/admin/usuarios.html` con formulario de creación (nombre, correo, contraseña, rol) y tabla de usuarios con botón de toggle activo/inactivo.
   - **Archivos**: `src/main/java/com/caketrack/controller/AdminUsuarioController.java`, `src/main/resources/templates/admin/usuarios.html`
   - **Dependencias**: T005
   - **Criterios de aceptación**: `AC-003.1`, `AC-003.2`, `AC-003.3`, `AC-003.4` (pruebas pasan a **GREEN**). Requisito `REQ-CAKE-006`, `REQ-CAKE-007` cubiertos.
@@ -73,13 +73,13 @@ T001 → T002 → T003 [prueba] → T004 → T005 [prueba] → T006 → T007 [pr
 
 ### Inventario y Recetas
 
-- [ ] **T007** `[HU-05, HU-06]` **[PRUEBA]** Escribir `InventarioRecetaTest.java` con pruebas de: registro de ingrediente con cantidad actual y stock mínimo (`AC-005.1`), cálculo y visualización de alerta de reposición cuando `cantidad_actual <= stock_minimo` (`AC-005.2`), actualización de cantidad actual que remueve la alerta (`AC-005.3`), creación de producto con ingredientes de receta (`AC-006.1`), rechazo de producto sin ingredientes asociados (`AC-006.2`) y marcado de producto como disponible cuando tiene al menos un ingrediente en receta (`AC-006.3`).
-  - **Archivo**: `src/test/java/com/caketrack/controller/InventarioRecetaTest.java`
+- [x] **T007** `[HU-05, HU-06]` **[PRUEBA]** Escribir `InventarioRecetaTest.java` con pruebas de: registro de ingrediente con cantidad actual y stock mínimo (`AC-005.1`), cálculo y visualización de alerta de reposición cuando `cantidad_actual <= stock_minimo` (`AC-005.2`), actualización de cantidad actual que remueve la alerta (`AC-005.3`), creación de producto con ingredientes de receta (`AC-006.1`), rechazo de producto sin ingredientes asociados (`AC-006.2`) y marcado de producto como disponible cuando tiene al menos un ingrediente en receta (`AC-006.3`).
+  - **Archivo**: `src/test/java/com/caketrack/InventarioRecetaTest.java`
   - **Dependencias**: T004
   - **Criterios de aceptación**: `AC-005.1`, `AC-005.2`, `AC-005.3`, `AC-006.1`, `AC-006.2`, `AC-006.3` (pruebas en estado **RED**).
   - **Criterio de terminado**: `./mvnw test-compile` compila; pruebas en estado **RED**.
 
-- [ ] **T008** `[HU-05, HU-06]` Implementar `InventarioController.java` en `com.caketrack.controller` con rutas para CRUD de ingredientes y gestión de productos con receta. Crear vistas `templates/admin/ingredientes.html` (lista con indicador visual de alerta BR-04, formulario de registro/edición) y `templates/admin/productos.html` (lista con toggle de disponibilidad, formulario de creación con selector de ingredientes).
+- [x] **T008** `[HU-05, HU-06]` Implementar `InventarioController.java` en `com.caketrack.controller` con rutas para CRUD de ingredientes y gestión de productos con receta. Crear vistas `templates/admin/ingredientes.html` (lista con indicador visual de alerta BR-04, formulario de registro/edición) y `templates/admin/productos.html` (lista con toggle de disponibilidad, formulario de creación con selector de ingredientes).
   - **Archivos**: `src/main/java/com/caketrack/controller/InventarioController.java`, `src/main/resources/templates/admin/ingredientes.html`, `src/main/resources/templates/admin/productos.html`
   - **Dependencias**: T007
   - **Criterios de aceptación**: `AC-005.1`, `AC-005.2`, `AC-005.3`, `AC-006.1`, `AC-006.2`, `AC-006.3` (pruebas pasan a **GREEN**). Requisito `REQ-CAKE-010`, `REQ-CAKE-011` cubiertos.
@@ -89,13 +89,13 @@ T001 → T002 → T003 [prueba] → T004 → T005 [prueba] → T006 → T007 [pr
 
 ### Catálogo Público
 
-- [ ] **T009** `[HU-07]` **[PRUEBA]** Escribir `CatalogoTest.java` con pruebas de: consulta de catálogo mostrando nombre, tipo, precio y disponibilidad (`AC-007.1`), filtro por tipo de producto TORTA o POSTRE (`AC-007.2`) y mensaje cuando el catálogo está vacío (`AC-007.3`).
-  - **Archivo**: `src/test/java/com/caketrack/controller/CatalogoTest.java`
+- [x] **T009** `[HU-07]` **[PRUEBA]** Escribir `CatalogoTest.java` con pruebas de: consulta de catálogo mostrando nombre, tipo, precio y disponibilidad (`AC-007.1`), filtro por tipo de producto TORTA o POSTRE (`AC-007.2`) y mensaje cuando el catálogo está vacío (`AC-007.3`).
+  - **Archivo**: `src/test/java/com/caketrack/CatalogoTest.java`
   - **Dependencias**: T008 (se requieren productos creados para consultar)
   - **Criterios de aceptación**: `AC-007.1`, `AC-007.2`, `AC-007.3` (pruebas en estado **RED**).
   - **Criterio de terminado**: `./mvnw test-compile` compila; pruebas en estado **RED**.
 
-- [ ] **T010** `[HU-07]` Implementar `CatalogoController.java` en `com.caketrack.controller` con ruta `/catalogo` y parámetro opcional `?tipo=TORTA|POSTRE`. Crear vista `templates/catalogo.html` con tabla de productos (nombre, tipo, precio, disponibilidad) y selector de filtro por tipo.
+- [x] **T010** `[HU-07]` Implementar `CatalogoController.java` en `com.caketrack.controller` con ruta `/catalogo` y parámetro opcional `?tipo=TORTA|POSTRE`. Crear vista `templates/catalogo.html` con tabla de productos (nombre, tipo, precio, disponibilidad) y selector de filtro por tipo.
   - **Archivos**: `src/main/java/com/caketrack/controller/CatalogoController.java`, `src/main/resources/templates/catalogo.html`
   - **Dependencias**: T009
   - **Criterios de aceptación**: `AC-007.1`, `AC-007.2`, `AC-007.3` (pruebas pasan a **GREEN**). Requisito `REQ-CAKE-012` cubierto.

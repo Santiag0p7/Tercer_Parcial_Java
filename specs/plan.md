@@ -232,11 +232,10 @@ src/test/java/com/caketrack/
 │   ├── UsuarioTest.java                 (T002)
 │   ├── IngredienteTest.java             (T002)
 │   └── ProductoTest.java               (T002)
-└── controller/
-    ├── AuthSecurityTest.java            (T003)
-    ├── AdminUsuarioTest.java            (T005)
-    ├── InventarioRecetaTest.java        (T007)
-    └── CatalogoTest.java                (T009)
+├── AuthSecurityTest.java                (T003)
+├── AdminUsuarioTest.java                (T005)
+├── InventarioRecetaTest.java            (T007)
+└── CatalogoTest.java                    (T009)
 ```
 
 ---
