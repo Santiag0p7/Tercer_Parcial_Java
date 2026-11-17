@@ -1,6 +1,7 @@
 # Guía de diseño UI/UX — CakeTrack
 
-> Fuente: `DESIGN.md` (Redbrick Coffee, *Style Reference*), tomado como guía oficial de CakeTrack.
+> Versión 2.0. Reemplaza la guía anterior basada en Redbrick Coffee.
+> Referencia de estructura: londonterrariums.com (secciones, ritmo y jerarquía). Los colores, textos y contenidos son propios de CakeTrack.
 > Implementación: `src/main/resources/static/css/caketrack.css`.
 > Esta guía es obligatoria para toda vista Thymeleaf nueva o modificada (ver `AGENTS.md`).
 
@@ -8,110 +9,116 @@
 
 ## 1. Concepto
 
-Estilo editorial impreso en tinta roja sobre papel blanco cálido. El rojo `#e82c2a` es el único acento cromático: aparece en logo, navegación, etiquetas de sección, bordes y acciones. El fondo es blanco, las tarjetas son gris suave y no hay sombras.
+CakeTrack es la puerta de entrada de una pastelería artesanal. La landing presenta la pastelería, muestra el catálogo y permite ingresar al sistema. Una vez dentro, cada rol ve un panel con sus herramientas.
 
-Los títulos usan una serif fina (peso 300, nunca negrita) y el texto de interfaz una sans humanista con espaciado positivo.
+El estilo es cálido y cercano: fondo crema, acentos fresa y caramelo, tarjetas blancas con esquinas redondeadas y títulos en serif. Se prioriza que el usuario entienda rápido qué puede hacer.
 
-## 2. Tokens de color
+## 2. Estructura de la landing
+
+De arriba abajo:
+
+1. **Anuncio superior:** banda fresa a todo el ancho con un mensaje corto.
+2. **Barra de navegación fija:** logo, enlaces a las secciones y botón "Ingresar".
+3. **Hero:** titular, texto de apoyo, dos acciones (ver catálogo e ingresar) y una imagen grande.
+4. **Historia:** texto y imagen en dos columnas, alternando el lado.
+5. **Catálogo:** tarjetas con los productos disponibles, tomados de la base de datos.
+6. **Equipo:** cinco tarjetas, una por rol, con lo que hace cada uno.
+7. **Acceso:** formulario de ingreso con los mensajes de error y de éxito.
+8. **Pie de página:** marca, nota de privacidad (Ley 1581 de 2012).
+
+Cada sección tiene una etiqueta pequeña en mayúsculas, un titular y un párrafo corto.
+
+## 3. Tokens de color
 
 | Nombre | Valor | Token | Uso |
 |---|---|---|---|
-| Brick Red | `#e82c2a` | `--color-brick-red` | Acento: bordes de acciones, enlaces, etiquetas, títulos display |
-| Press Black | `#212529` | `--color-press-black` | Texto de párrafos y cuerpo |
-| Cream White | `#ffffff` | `--color-cream-white` | Lienzo de página, fondo de navegación, base de tarjetas |
-| Soft Grey | `#f2f2f2` | `--color-soft-grey` | Superficie de tarjetas y paneles elevados |
-| Carbon | `#121212` | `--color-carbon` | Pie de página y paneles inversos |
+| Crema | `#fffaf4` | `--color-crema` | Fondo de página |
+| Blanco | `#ffffff` | `--color-blanco` | Tarjetas, barra de navegación, formularios |
+| Vainilla | `#f6eee4` | `--color-vainilla` | Secciones alternas y superficies suaves |
+| Fresa | `#b5345a` | `--color-berry` | Acción principal, enlaces, titulares |
+| Fresa oscuro | `#8f2444` | `--color-berry-oscuro` | Estado hover de la acción principal |
+| Cacao | `#3b2a22` | `--color-cacao` | Texto de cuerpo y pie de página |
+| Pistacho | `#5f7f45` | `--color-pistacho` | Estado positivo (activo, disponible) |
+| Caramelo | `#c98b3d` | `--color-caramelo` | Etiquetas de sección |
 
-No se usa un segundo color de marca. Estados como "disponible" o "activo" se expresan con Carbon, y las alertas con Brick Red.
+Contraste principal: fresa sobre blanco 5.8:1, cacao sobre crema más de 12:1. Ambos cumplen WCAG AA para texto normal.
 
-## 3. Tokens tipográficos
+## 4. Tipografía
 
-| Familia | Rol | Pesos | Tamaños | Tracking |
-|---|---|---|---|---|
-| Surt (sustituto: **Inter**) | Cuerpo, navegación, botones, etiquetas de tarjeta, toda la UI funcional | 400 | 15, 20, 30, 35 px | 0.013em (15 px), 0.017em (20 px), 0.03em (30 px), 0.04em (35 px) |
-| Editorial Old (sustituto: **Playfair Display**) | Solo titulares display | 300 | 35 px en la app (100–150 px reservados para portadas) | -0.005em |
-| GTStandard-M (sustituto: **JetBrains Mono**) | Microetiquetas en mayúsculas, anuncios, insignias | 400 | 10 px | 0.06em |
+| Familia | Rol | Pesos |
+|---|---|---|
+| Playfair Display | Titulares (hero, secciones, títulos de página) | 400 |
+| Inter | Cuerpo, navegación, botones, formularios, etiquetas | 400, 500, 600 |
 
-Interlineado: cuerpo 1.5, subtítulos 1.2, display 0.99–1.2.
+Escala:
 
-## 4. Espaciado, radios y layout
+- Titular de hero: `clamp(2.4rem, 5vw, 4rem)`, interlineado 1.08.
+- Titular de sección: `clamp(1.8rem, 3vw, 2.5rem)`.
+- Etiqueta: 0.8rem, mayúsculas, espaciado 0.14em, caramelo, peso 600.
+- Texto destacado: 1.1rem, cacao.
+- Cuerpo: 16px, interlineado 1.6.
 
-- **Escala de espaciado:** 5, 8, 10, 12, 15, 20, 30, 50, 117, 234 px.
-- **Radios:**
-  - Tarjetas e imágenes: 25 px
-  - Botones y campos de texto: 50 px
-  - Enlaces: 3.75 px
-- **Layout:**
-  - Separación entre secciones: 50 px
-  - Padding de tarjeta: 30 px
-  - Separación de elementos: 10 px
-- **Densidad:** compacta.
-- **Responsivo:** móvil primero con la grilla de Bootstrap 5. En pantallas menores de 576 px los títulos bajan a 30 px.
+## 5. Radios, espaciado y sombras
 
-## 5. Superficies y elevación
-
-| Nivel | Nombre | Valor | Uso |
-|---|---|---|---|
-| 0 | Lienzo blanco | `#ffffff` | Fondo de todas las secciones |
-| 1 | Tarjeta gris | `#f2f2f2` | Tarjetas y bloques de contenido |
-| 2 | Banda roja | `#e82c2a` | Anuncio superior y bandas de color |
-| 3 | Panel carbón | `#121212` | Pie de página y paneles inversos |
-
-**Sin sombras.** La elevación se logra con el radio de 25 px y el cambio de superficie de blanco a gris.
+- **Tarjetas e imágenes:** radio 24px.
+- **Botones y campos:** radio 50px (forma de píldora).
+- **Enlaces de ayuda:** radio 6px.
+- **Sombra suave:** `0 10px 30px rgba(59, 42, 34, 0.08)`. Se usa solo en tarjetas, nunca en texto.
+- **Secciones:** 72px de padding vertical en escritorio y 48px en móvil.
+- **Tarjetas:** 28px de padding en escritorio.
 
 ## 6. Componentes
 
-- **Anuncio superior:** banda roja a todo el ancho, texto blanco en mayúsculas de 10 px con tracking 0.06em. Alto aproximado de 30 px.
-- **Marca:** "CakeTrack" en Surt 400, 20 px, tracking 0.017em, color rojo.
-- **Enlace de navegación:** Surt 400, 15 px, rojo, sin subrayado ni fondo. Al pasar el cursor solo cambia la opacidad.
-- **Etiqueta de sección:** 10 px en mayúsculas, rojo, tracking 0.06em, con filete de 1px debajo.
-- **Enlace con flecha:** 10–15 px, rojo, alineado a la derecha, con radio de 3.75 px.
-- **Botón de acción:** solo contorno de 1px rojo, radio de 50 px, padding 10px × 20px, sin relleno.
-- **Campo de texto:** contorno rojo de 1px, radio de 50 px, padding 10px × 20px.
-- **Tarjeta:** fondo `#f2f2f2`, radio de 25 px, padding de 30 px, sin sombra.
-- **Tabla:** encabezados en microetiqueta roja con filete inferior; filas separadas por líneas finas.
-- **Insignia:** 10 px en mayúsculas, radio de 50 px. Alerta en rojo sólido, estado normal en carbón.
-- **Pie de página:** panel carbón con texto blanco en microetiqueta.
+- **Anuncio superior:** fondo fresa, texto blanco, 0.85rem.
+- **Barra de navegación:** fondo blanco con sombra leve, marca en titular serif fresa.
+- **Botón principal (`btn-berry`):** relleno fresa, texto blanco, forma de píldora. Es la única acción rellena de cada pantalla.
+- **Botón secundario (`btn-outline-berry`):** contorno fresa, relleno al pasar el cursor.
+- **Botones de estado:** contorno pistacho para acciones positivas, contorno fresa para acciones de baja.
+- **Tarjeta de producto:** imagen (o bloque ilustrado), insignia de tipo, nombre, descripción corta y precio en fresa.
+- **Tarjeta de rol:** icono fresa, nombre del rol y una frase de qué hace.
+- **Tarjeta de acceso:** blanca, con mensajes de error o éxito arriba del formulario.
+- **Enlace con flecha:** fresa, sin subrayado, con una flecha al final.
+- **Insignias:** forma de píldora. "Reponer" en fresa, "Normal" en pistacho.
+- **Pie de página:** fondo cacao, texto crema.
 
-## 7. Reglas de uso
+## 7. Layout y responsividad
+
+- Grilla de Bootstrap 5, con diseño móvil primero.
+- En escritorio las secciones de texto e imagen van en dos columnas de la misma anchura. En móvil se apilan.
+- Las tarjetas de producto pasan de 3 columnas (escritorio) a 2 (tableta) y 1 (móvil).
+- Los títulos y bloques de imagen se reducen en pantallas menores de 992px.
+
+## 8. Imágenes
+
+La landing y el panel incorporan bloques ilustrados con iconos de Bootstrap Icons mientras no haya fotografías. Para usar fotos reales:
+
+1. Guardar los archivos en `src/main/resources/static/img/`.
+2. Reemplazar el contenido del bloque (`div.bloque-imagen` o `div.tarjeta-producto-imagen`) por una etiqueta `img` con `th:src="@{/img/nombre.jpg}"`.
+
+Las fotos deben ser cálidas, tomadas desde arriba o a la altura de la mesa, con productos reales de la pastelería. Evitar fotos de catálogo sobre fondo blanco.
+
+## 9. Reglas de uso
 
 ### Hacer
-- Usar Brick Red en cada texto interactivo, etiqueta de sección y acción de contorno.
-- Títulos display con peso 300 y tamaño adecuado; nunca negrita.
-- Aplicar el tracking indicado a cada tamaño de Surt.
-- Radio de 25 px en tarjetas, 50 px en botones y campos, 3.75 px en enlaces.
-- Mantener las tarjetas de producto sobre `#f2f2f2` con 30 px de padding y sin sombra.
+- Usar fresa para acciones principales, enlaces y titulares. Un solo botón relleno por pantalla.
+- Mantener el texto de cuerpo en cacao, nunca en fresa.
+- Agrupar el contenido en tarjetas blancas sobre el fondo crema.
+- Mostrar en la landing solo productos con disponibilidad real.
+- Explicar en cada tarjeta de rol lo que hace ese rol, con el alcance de la versión actual.
 
 ### No hacer
-- No introducir botones con fondo sólido. La única superficie de acción es el contorno rojo.
-- No poner en negrita los titulares. El peso 300 es parte de la identidad.
-- No añadir un segundo color de marca.
-- No usar sombras en tarjetas ni imágenes.
-- No usar texto blanco sobre `#f2f2f2`.
-- No usar fotografía de producto sobre fondo blanco tipo catálogo de comercio electrónico.
+- No mostrar en la landing funciones que aún no existen (pedidos personalizados, panel de cocina, domicilios), como si ya estuvieran disponibles.
+- No usar más de dos colores de acento en una misma pantalla.
+- No poner texto blanco sobre el fondo caramelo ni sobre el crema.
+- No ocultar el formulario de ingreso detrás de otra pantalla. La landing es la única entrada al sistema.
+- No cambiar atributos `th:*`, `sec:authorize` ni `name` de formularios al ajustar estilos.
 
-## 8. Adaptación en CakeTrack
-
-Decisiones tomadas al aplicar la guía a la aplicación, que no aparecen en el original:
-
-| Tema | Decisión | Motivo |
-|---|---|---|
-| Tipografías | Se usan Inter, Playfair Display y JetBrains Mono de Google Fonts | Las fuentes originales son comerciales; la guía lista estos sustitutos |
-| Tamaños de display | Títulos de página a 35 px (no 100–150 px) | 100–150 px son para portadas; la app es una herramienta de gestión |
-| Botón primario | Contorno rojo, igual que cualquier otra acción | La guía prohíbe botones rellenos |
-| Botón activo de filtro | Contorno carbón con subrayado | Distingue el filtro activo sin relleno |
-| Estados de disponibilidad | Carbón para "Disponible/Activo", rojo para alertas | La paleta no incluye verde ni ámbar |
-| Filetes de tabla | Carbón al 12 % de opacidad | Derivado de Carbon para líneas finas, no es un color nuevo |
-| Pie de página | Panel carbón | Guía: pie en panel oscuro o claro |
-
-### Contraste
-
-El rojo `#e82c2a` sobre blanco tiene una relación de contraste de **4.35:1**. Cumple el mínimo de 3:1 para texto grande, pero queda debajo del 4.5:1 requerido para texto pequeño. Por eso el texto de cuerpo se mantiene en `#212529` y el rojo se reserva para etiquetas, enlaces y acciones. Si se necesita cumplimiento estricto de accesibilidad, revisar este token en un ADR.
-
-## 9. Mapa de archivos
+## 10. Mapa de archivos
 
 | Archivo | Responsabilidad |
 |---|---|
-| `src/main/resources/static/css/caketrack.css` | Tokens en `:root`, sobrescritura de componentes Bootstrap |
-| `src/main/resources/templates/fragments/layout.html` | Fuentes, Bootstrap Icons, hoja de estilos, anuncio, barra de navegación y pie |
-| `src/main/resources/templates/*.html` | Vistas que incluyen el anuncio y el layout |
+| `static/css/caketrack.css` | Tokens en `:root` y componentes de Bootstrap ajustados |
+| `templates/fragments/layout.html` | Encabezado, anuncio, barras de navegación, pie y fuentes |
+| `templates/landing.html` | Landing pública con acceso al sistema |
+| `templates/inicio.html` | Panel de trabajo según el rol |
+| `templates/catalogo.html`, `templates/admin/*.html` | Vistas internas del sistema |

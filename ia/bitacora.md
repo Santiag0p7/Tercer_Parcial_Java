@@ -45,3 +45,9 @@ Registro de interacciones, decisiones y contextos relevantes compartidos con asi
 - **Contexto**: Se tomó `Downloads/DESIGN.md` como guía oficial de UI/UX. Se consolidó en `specs/design.md`, se implementó en `static/css/caketrack.css` y se aplicó a las vistas del Sprint 1.
 - **Decisión**: Fuentes sustitutas de Google Fonts (Inter, Playfair Display, JetBrains Mono). Botones solo en contorno rojo, según la guía. Sin sombras. Se agregó el anuncio superior en las vistas. Contraste del rojo sobre blanco: 4.35:1, por debajo de 4.5:1 para texto pequeño (documentado en design.md). `AGENTS.md` incluye la regla obligatoria de diseño.
 - **Resultado**: `./mvnw test` con 36 pruebas en verde. No se modificaron atributos `th:*`, `sec:authorize` ni `name` de formularios. Verificación visual en navegador pendiente.
+
+### 2026-11-17 — Landing de CakeTrack y panel por rol (reemplaza la guía visual anterior)
+- **Contexto**: Adaptación de la estructura de londonterrariums.com a una landing de pastelería. El inicio de sesión vive en la landing; el panel `/inicio` se muestra solo a usuarios autenticados.
+- **Decisión**: `HomeController` atiende `/`, `/login` (GET) y `/inicio`. `/` y `/login` son públicos; si hay sesión redirigen al panel. `AuthController` queda con recuperación y restablecimiento. Se eliminó `login.html`. `design.md` pasa a la versión 2.0 (paleta fresa y cacao, Playfair Display e Inter). Imágenes pendientes: se usan bloques ilustrados con iconos hasta que se incorporen fotografías CC0.
+- **Pendiente**: fotografías reales, verificación visual en navegador, y textos de historia y contacto que debe confirmar la pastelería.
+- **Resultado**: `./mvnw test` con 41 pruebas en verde (5 nuevas en `LandingTest`).

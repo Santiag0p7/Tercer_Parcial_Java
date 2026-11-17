@@ -1,13 +1,79 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('Inicio')}"></head>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Panel')}"></head>
 <body class="bg-light">
 <div th:replace="~{fragments/layout :: anuncio}"></div>
 <div th:replace="~{fragments/layout :: navbar}"></div>
+
 <main class="container py-4">
-    <h1 class="h3">Bienvenido, <span th:text="${#authentication.name}">usuario</span></h1>
-    <p class="text-muted">Use el menú superior para acceder a las opciones permitidas para su rol.</p>
+    <p class="etiqueta">Panel de trabajo</p>
+    <h1 class="h3 mb-1">Hola, <span th:text="${#authentication.name}">usuario</span></h1>
+    <p class="texto-destacado mb-4">Estas son las herramientas disponibles para tu rol.</p>
+
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+            <div class="tarjeta-panel h-100">
+                <i class="bi bi-book"></i>
+                <h2 class="h5">Catálogo de productos</h2>
+                <p class="small">Consulta precios y disponibilidad de nuestras tortas y postres.</p>
+                <a class="btn btn-outline-berry btn-sm" th:href="@{/catalogo}">Abrir catálogo</a>
+            </div>
+        </div>
+
+        <div class="col" sec:authorize="hasAnyRole('ADMIN', 'PASTELERO')">
+            <div class="tarjeta-panel h-100">
+                <i class="bi bi-basket"></i>
+                <h2 class="h5">Inventario de ingredientes</h2>
+                <p class="small">
+                    Ingredientes que necesitan reposición:
+                    <strong th:text="${ingredientesEnAlerta}">0</strong>
+                </p>
+                <a class="btn btn-outline-berry btn-sm" th:href="@{/admin/ingredientes}">Gestionar ingredientes</a>
+            </div>
+        </div>
+
+        <div class="col" sec:authorize="hasAnyRole('ADMIN', 'PASTELERO')">
+            <div class="tarjeta-panel h-100">
+                <i class="bi bi-box-seam"></i>
+                <h2 class="h5">Recetas y productos</h2>
+                <p class="small">
+                    Productos disponibles para la venta:
+                    <strong th:text="${productosDisponibles}">0</strong>
+                </p>
+                <a class="btn btn-outline-berry btn-sm" th:href="@{/admin/productos}">Gestionar productos</a>
+            </div>
+        </div>
+
+        <div class="col" sec:authorize="hasRole('ADMIN')">
+            <div class="tarjeta-panel h-100">
+                <i class="bi bi-people"></i>
+                <h2 class="h5">Equipo y accesos</h2>
+                <p class="small">
+                    Cuentas registradas:
+                    <strong th:text="${totalUsuarios}">0</strong>
+                </p>
+                <a class="btn btn-outline-berry btn-sm" th:href="@{/admin/usuarios}">Administrar usuarios</a>
+            </div>
+        </div>
+
+        <div class="col" sec:authorize="hasRole('REPARTIDOR')">
+            <div class="tarjeta-panel h-100">
+                <i class="bi bi-bicycle"></i>
+                <h2 class="h5">Entregas</h2>
+                <p class="small mb-0">Tu panel de entregas llegará en una próxima versión de CakeTrack.</p>
+            </div>
+        </div>
+
+        <div class="col" sec:authorize="hasRole('CAJERO')">
+            <div class="tarjeta-panel h-100">
+                <i class="bi bi-cash-coin"></i>
+                <h2 class="h5">Atención al cliente</h2>
+                <p class="small mb-0">Usa el catálogo para informar a los clientes sobre precios y disponibilidad.</p>
+            </div>
+        </div>
+    </div>
 </main>
+
 <div th:replace="~{fragments/layout :: pie}"></div>
 </body>
 </html>

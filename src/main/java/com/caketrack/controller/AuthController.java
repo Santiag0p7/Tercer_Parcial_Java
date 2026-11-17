@@ -38,21 +38,6 @@ public class AuthController {
         this.mostrarEnlace = mostrarEnlace;
     }
 
-    @GetMapping("/")
-    public String raiz() {
-        return "redirect:/inicio";
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @GetMapping("/inicio")
-    public String inicio() {
-        return "inicio";
-    }
-
     @GetMapping("/recuperar")
     public String recuperar() {
         return "recuperar";
