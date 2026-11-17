@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Inicio')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container py-4">
+    <h1 class="h3">Bienvenido, <span th:text="${#authentication.name}">usuario</span></h1>
+    <p class="text-muted">Use el menú superior para acceder a las opciones permitidas para su rol.</p>
+</main>
+<div th:replace="~{fragments/layout :: pie}"></div>
+</body>
+</html>
