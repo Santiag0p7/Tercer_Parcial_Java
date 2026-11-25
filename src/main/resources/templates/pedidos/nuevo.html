@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Nuevo pedido')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/layout :: anuncio}"></div>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container py-4">
+    <p class="etiqueta">Pedidos</p>
+    <h1 class="h3 mb-3">Nuevo pedido</h1>
+
+    <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}">Mensaje</div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}">Error</div>
+
+    <form th:action="@{/pedidos/nuevo}" method="post">
+        <div class="row g-4">
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h5 mb-3">Pedido personalizado</h2>
+
+                        <div class="form-check mb-3" sec:authorize="!hasRole('CLIENTE')">
+                            <label class="form-label" for="clienteId">Cliente</label>
+                            <select class="form-select" id="clienteId" name="clienteId" required>
+                                <option value="">-- Seleccione el cliente --</option>
+                                <option th:each="c : ${clientes}" th:value="${c.id}"
+                                        th:text="${c.nombre} + ' (' + ${c.correo} + ')'"
+                                        th:selected="${c.id == clienteId}">Cliente</option>
+                            </select>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="esPersonalizado" name="esPersonalizado"
+                                   value="true" th:checked="${esPersonalizado}">
+                            <label class="form-check-label" for="esPersonalizado">Es una torta personalizada</label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="saborBizcocho" class="form-label">Sabor del bizcocho</label>
+                            <input type="text" class="form-control" id="saborBizcocho" name="saborBizcocho"
+                                   th:value="${saborBizcocho}" maxlength="100">
+                        </div>
+                        <div class="mb-3">
+                            <label for="relleno" class="form-label">Relleno</label>
+                            <input type="text" class="form-control" id="relleno" name="relleno"
+                                   th:value="${relleno}" maxlength="100">
+                        </div>
+                        <div class="mb-3">
+                            <label for="cobertura" class="form-label">Cobertura</label>
+                            <input type="text" class="form-control" id="cobertura" name="cobertura"
+                                   th:value="${cobertura}" maxlength="100">
+                        </div>
+                        <div class="mb-3">
+                            <label for="porciones" class="form-label">Porciones</label>
+                            <input type="number" min="1" step="1" class="form-control" id="porciones" name="porciones"
+                                   th:value="${porciones}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="dedicatoria" class="form-label">Dedicatoria (opcional)</label>
+                            <input type="text" class="form-control" id="dedicatoria" name="dedicatoria"
+                                   th:value="${dedicatoria}" maxlength="200">
+                        </div>
+                        <div class="mb-3">
+                            <label for="notasAdicionales" class="form-label">Notas adicionales</label>
+                            <textarea class="form-control" id="notasAdicionales" name="notasAdicionales" rows="2"
+                                      th:text="${notasAdicionales}"></textarea>
+                        </div>
+                        <div class="mb-1">
+                            <label for="fechaEntrega" class="form-label">Fecha y hora de entrega</label>
+                            <input type="datetime-local" class="form-control" id="fechaEntrega" name="fechaEntrega" required>
+                        </div>
+                        <div class="form-text">Los pedidos personalizados requieren al menos 24 horas de anticipación.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h5 mb-3">Productos del catálogo</h2>
+                        <p class="form-text mb-3">Opcional. Solo se pueden pedir productos disponibles.</p>
+
+                        <div class="row g-2 mb-2" th:each="fila : ${#numbers.sequence(1, 3)}">
+                            <div class="col-7">
+                                <select class="form-select form-select-sm" name="productoId">
+                                    <option value="">-- Producto --</option>
+                                    <option th:each="p : ${productos}" th:value="${p.id}"
+                                            th:text="${p.nombre} + ' · ' + ${#numbers.formatDecimal(p.precio, 1, 'POINT', 0, 'COMMA')}">Producto</option>
+                                </select>
+                            </div>
+                            <div class="col-5">
+                                <input type="number" min="1" step="1" class="form-control form-control-sm"
+                                       name="cantidad" placeholder="Cantidad">
+                            </div>
+                        </div>
+
+                        <p class="alert alert-light border mt-4 mb-0" th:if="${#lists.isEmpty(productos)}">
+                            No hay productos disponibles en el catálogo en este momento.
+                        </p>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-outline-primary">Registrar pedido</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</main>
+<div th:replace="~{fragments/layout :: pie}"></div>
+</body>
+</html>

@@ -384,4 +384,257 @@ Then el sistema debe mostrar el mensaje "No hay productos disponibles en este mo
 
 ---
 
-**Fin del documento — SPEC-CAKETRACK-001 v1.0**
+## 10. Sprint 2 — v2.0: Pedidos Personalizados, Abono del 50 % y Cocina KDS
+
+| Campo | Valor |
+|-------|-------|
+| **ID** | SPEC-CAKETRACK-001-S2 |
+| **Versión** | 2.0 |
+| **Estado** | Borrador - pendiente de aprobación (Puerta 1) |
+| **Alcance** | Sprint 2 (HU-08 a HU-14) |
+| **Relación** | Extiende la sección 1 a 9 (Sprint 1). Lo documentado en Sprint 1 no se modifica. |
+
+### 10.1 Contexto del Sprint 2
+
+Con el catálogo y la gestión de inventario operativos (Sprint 1), la pastelería necesita recibir encargos personalizados de tortas y postres, cobrar un abono mínimo antes de iniciar la producción, controlar el inventario al empezar la preparación y hacer seguimiento del pedido hasta la entrega en tienda.
+
+### 10.2 Exclusiones y cambios respecto al Sprint 1
+
+- Las exclusiones de la sección 1.3 (encargos personalizados y KDS) quedan **incluidas** en esta versión.
+- Se mantiene excluido: gestión de domicilios o entregas (rol REPARTIDOR sin funcionalidad activa), pasarelas de pago y notificaciones por correo o SMS.
+- **Extensión de menú**: `REQ-CAKE-008` y AC-004.1 se amplían en Sprint 2. El rol CLIENTE ve además la opción "Mis pedidos" (ver AC-013.1). El texto original de AC-004.1 no se modifica.
+- **Supuesto de pago**: el abono se registra manualmente (referencia de pago capturada por el CAJERO). No hay integración con pasarelas.
+- **Cancelación fuera de alcance**: ninguna historia de usuario de este sprint pide cancelar pedidos. El estado `CANCELADO` existe en el modelo, pero sin acción de interfaz ni prueba. La devolución de inventario se definirá en una historia futura.
+
+### 10.3 Actores Sprint 2
+
+| Rol | Responsabilidad en Sprint 2 |
+|-----|----------------------------|
+| **CLIENTE** | Crea pedidos de catálogo o personalizados y consulta el estado de sus pedidos. |
+| **CAJERO** | Crea pedidos en mostrador, fija el total de los pedidos personalizados, registra y valida el abono (mínimo 50 %) y liquida el saldo en tienda. |
+| **PASTELERO** | Consulta el tablero KDS, cambia estados de producción y dispara el descuento de inventario. |
+| **ADMIN** | Acceso a caja y cocina para supervisión (según la matriz de `/specs/plan.md`). |
+
+### 10.4 Reglas de Negocio Sprint 2
+
+| ID | Regla |
+|----|-------|
+| **BR-06** | Todo pedido personalizado debe especificar sabor, relleno, porciones, dedicatoria (opcional) y fecha/hora de entrega con al menos 24 horas de anticipación respecto a la fecha de creación. |
+| **BR-07** | Ningún pedido puede pasar a estado `EN_COLA` (cocina) si el monto abonado y validado por el CAJERO es inferior al 50 % del valor total del pedido. |
+| **BR-08** | Cuando el PASTELERO cambia un pedido de `EN_COLA` a `EN_PREPARACION`, el sistema debe descontar de `stockActual` de cada `Ingrediente` la cantidad definida en `RecetaItem` multiplicada por la cantidad pedida. |
+| **BR-09** | Si algún ingrediente de la receta no tiene `stockActual` suficiente para cubrir el pedido, el sistema debe impedir el inicio de preparación y mostrar qué ingrediente(s) hacen falta. |
+| **BR-10** | Un pedido no puede marcarse como `ENTREGADO` en tienda si tiene saldo pendiente (`total - montoAbonado > 0`). |
+
+### 10.5 Requisitos Funcionales Sprint 2 (Sintaxis EARS)
+
+Los IDs `REQ-CAKE-011` y `REQ-CAKE-012` pertenecen al Sprint 1, por lo que el Sprint 2 empieza en `REQ-CAKE-013`.
+
+#### 10.5.1 Pedidos (HU-08, HU-09)
+
+| ID | Requisito | Tipo EARS | Regla |
+|----|-----------|-----------|-------|
+| **REQ-CAKE-013** | Cuando el CLIENTE envía un pedido personalizado, el sistema debe registrarlo con sabor, relleno, porciones, dedicatoria opcional y fecha/hora de entrega con al menos 24 horas de anticipación. | Event-driven | BR-06 |
+| **REQ-CAKE-014** | Cuando el CLIENTE selecciona productos disponibles del catálogo con sus cantidades, el sistema debe crear el pedido con un detalle por producto que registre precio unitario y subtotal. | Event-driven | — |
+| **REQ-CAKE-015** | El sistema debe calcular automáticamente el total del pedido como la suma de los subtotales de sus detalles y registrar el monto abonado y la referencia de pago. | Ubiquitous | — |
+
+#### 10.5.2 Abono y Validación (HU-10)
+
+| ID | Requisito | Tipo EARS | Regla |
+|----|-----------|-----------|-------|
+| **REQ-CAKE-016** | Mientras el monto abonado validado por el CAJERO sea inferior al 50 % del total, el sistema debe mantener el pedido en estado `PENDIENTE_ABONO` y no permitir su paso a `EN_COLA`. | State-driven | BR-07 |
+
+#### 10.5.3 Cocina KDS e Inventario (HU-11, HU-12)
+
+| ID | Requisito | Tipo EARS | Regla |
+|----|-----------|-----------|-------|
+| **REQ-CAKE-017** | El sistema debe mostrar al PASTELERO un tablero KDS con los pedidos en `EN_COLA` y `EN_PREPARACION`, ordenados por fecha de entrega ascendente (los más urgentes primero). | Ubiquitous | — |
+| **REQ-CAKE-018** | Cuando el PASTELERO cambia un pedido de `EN_COLA` a `EN_PREPARACION`, el sistema debe descontar de cada ingrediente de la receta la cantidad requerida multiplicada por la cantidad pedida. | Event-driven | BR-08 |
+| **REQ-CAKE-019** | Si el stock de algún ingrediente es insuficiente para un pedido, el sistema debe impedir el cambio a `EN_PREPARACION`, no descontar inventario y mostrar la lista de ingredientes faltantes con la cantidad que falta. | State-driven | BR-09 |
+
+#### 10.5.4 Seguimiento y Liquidación (HU-13, HU-14)
+
+| ID | Requisito | Tipo EARS | Regla |
+|----|-----------|-----------|-------|
+| **REQ-CAKE-020** | El sistema debe mostrar al CLIENTE, en "Mis pedidos", el estado actual, la fecha de entrega y el saldo pendiente de cada uno de sus pedidos, y solo los pedidos propios. | Ubiquitous | NFR-CAKE-003 |
+| **REQ-CAKE-021** | Cuando el CAJERO registra el pago del saldo restante de un pedido, el sistema debe actualizar el monto abonado y, si el saldo queda en cero, permitir marcar el pedido como `ENTREGADO`; si el saldo es mayor a cero, debe rechazar ese cambio de estado. | Event-driven | BR-10 |
+
+### 10.6 Historias de Usuario y Criterios de Aceptación Sprint 2
+
+Formato Given/When/Then. Los criterios de error se identifican con sufijo de error.
+
+#### HU-08: Pedido de Catálogo o Personalizado
+
+**Como** CLIENTE, **quiero** pedir productos del catálogo o encargar una torta personalizada **para** recibir el producto en la fecha que necesito.
+
+**AC-008.1** — Camino feliz: pedido personalizado válido
+```gherkin
+Given un usuario autenticado con rol "CLIENTE"
+When el usuario envía un pedido personalizado con sabor "Vainilla", relleno "Crema de maracuyá", 12 porciones, dedicatoria "Feliz cumpleaños Ana" y fecha de entrega con 48 horas de anticipación
+Then el sistema debe crear el pedido en estado "PENDIENTE_ABONO" con código "CT-2026-XXXX" y mostrar el mensaje "Pedido registrado exitosamente"
+```
+
+**AC-008.2** — Caso de error: fecha de entrega con menos de 24 horas
+```gherkin
+Given un usuario autenticado con rol "CLIENTE"
+When el usuario envía un pedido personalizado con fecha de entrega con 10 horas de anticipación
+Then el sistema debe mostrar el mensaje "La entrega debe programarse con al menos 24 horas de anticipación" y no debe crear el pedido
+```
+
+**AC-008.3** — Camino feliz: pedido de catálogo con cantidades
+```gherkin
+Given un usuario autenticado con rol "CLIENTE" y el producto "Torta de Chocolate" marcado como "Disponible" a precio 45000
+When el usuario solicita 2 unidades de ese producto
+Then el sistema debe crear el pedido con un detalle de cantidad 2, precio unitario 45000 y subtotal 90000
+```
+
+**AC-008.4** — Camino feliz: total fijado por el CAJERO en pedido personalizado
+```gherkin
+Given un pedido personalizado sin productos de catálogo en estado "PENDIENTE_ABONO" y un usuario autenticado con rol "CAJERO"
+When el CAJERO registra el total del pedido en 150000
+Then el sistema debe guardar total 150000 y permitir continuar con el registro del abono
+```
+
+**AC-008.5** — Caso de error: total no válido
+```gherkin
+Given un pedido personalizado sin productos de catálogo en estado "PENDIENTE_ABONO" y un usuario autenticado con rol "CAJERO"
+When el CAJERO registra el total del pedido en 0
+Then el sistema debe mostrar el mensaje "El total del pedido debe ser mayor que cero" y no debe modificar el pedido
+```
+
+#### HU-09: Cálculo Automático y Registro de Abono
+
+**Como** CAJERO, **quiero** que el total se calcule solo y registrar el abono recibido **para** controlar lo que ha pagado el cliente.
+
+**AC-009.1** — Camino feliz: cálculo de total
+```gherkin
+Given un pedido con detalles "Torta de Chocolate" (cantidad 1, subtotal 45000) y "Postre de Fresa" (cantidad 2, subtotal 30000)
+When el sistema guarda el pedido
+Then el total del pedido debe ser 75000
+```
+
+**AC-009.2** — Camino feliz: registro de abono con referencia
+```gherkin
+Given un pedido con total 75000 en estado "PENDIENTE_ABONO" y un usuario autenticado con rol "CAJERO"
+When el CAJERO registra un abono de 40000 con referencia de pago "NEQUI-8821"
+Then el sistema debe guardar montoAbonado 40000 y referenciaPago "NEQUI-8821" con el pedido en estado "PENDIENTE_ABONO" hasta su validación
+```
+
+#### HU-10: Validación de Abono Mínimo por CAJERO
+
+**Como** CAJERO, **quiero** validar que el abono sea al menos el 50 % **para** que cocina solo reciba pedidos con compromiso de pago.
+
+**AC-010.1** — Camino feliz: abono validado igual o superior al 50 %
+```gherkin
+Given un pedido con total 75000 y montoAbonado 37500 registrado por el CAJERO
+When el CAJERO valida el abono
+Then el sistema debe marcar abonoValidado como verdadero y cambiar el pedido a estado "EN_COLA"
+```
+
+**AC-010.2** — Caso de error: abono inferior al 50 %
+```gherkin
+Given un pedido con total 75000 y montoAbonado 30000 registrado por el CAJERO
+When el CAJERO intenta validar el abono
+Then el sistema debe mostrar el mensaje "El abono mínimo es el 50 % del total (37500)" y el pedido debe permanecer en estado "PENDIENTE_ABONO"
+```
+
+**AC-010.3** — Caso límite: abono exactamente igual al 50 %
+```gherkin
+Given un pedido con total 75000 y montoAbonado 37500
+When el CAJERO valida el abono
+Then el sistema debe aceptar la validación y cambiar el pedido a estado "EN_COLA"
+```
+
+#### HU-11: Panel KDS del PASTELERO
+
+**Como** PASTELERO, **quiero** ver los pedidos en cola ordenados por urgencia **para** producir primero lo que vence antes.
+
+**AC-011.1** — Camino feliz: orden por fecha de entrega
+```gherkin
+Given tres pedidos en estado "EN_COLA" con fechas de entrega 2026-11-30, 2026-11-27 y 2026-12-05
+When el PASTELERO abre el tablero de cocina
+Then el sistema debe listar los pedidos en el orden 2026-11-27, 2026-11-30, 2026-12-05
+```
+
+#### HU-12: Cambio de Estado en Cocina y Descuento de Inventario
+
+**Como** PASTELERO, **quiero** cambiar el estado del pedido y que el inventario se descuente solo **para** mantener el stock real.
+
+**AC-012.1** — Camino feliz: descuento exacto al iniciar preparación
+```gherkin
+Given un pedido en "EN_COLA" con 2 unidades de "Torta de Chocolate", cuya receta requiere "Harina de trigo" 1 kg por unidad, y un ingrediente "Harina de trigo" con cantidadActual 10 kg
+When el PASTELERO cambia el pedido a "EN_PREPARACION"
+Then el sistema debe actualizar cantidadActual de "Harina de trigo" a 8 kg y el pedido debe quedar en "EN_PREPARACION"
+```
+
+**AC-012.2** — Caso de error: stock insuficiente
+```gherkin
+Given un pedido en "EN_COLA" con 2 unidades de "Torta de Chocolate", cuya receta requiere "Chocolate" 0.3 kg por unidad, y un ingrediente "Chocolate" con cantidadActual 0.5 kg
+When el PASTELERO intenta cambiar el pedido a "EN_PREPARACION"
+Then el sistema debe mostrar el mensaje "Stock insuficiente: Chocolate (faltan 0.1 kg)", no debe descontar ningún ingrediente y el pedido debe permanecer en "EN_COLA"
+```
+
+#### HU-13: Seguimiento de Estado para el CLIENTE
+
+**Como** CLIENTE, **quiero** ver el estado de mis pedidos **para** saber cuándo estará listo.
+
+**AC-013.1** — Camino feliz: consulta de mis pedidos
+```gherkin
+Given un CLIENTE autenticado con un pedido en "HORNEANDO" y otro pedido de otro cliente
+When el CLIENTE abre "Mis pedidos"
+Then el sistema debe mostrar solo su pedido con estado "HORNEANDO", fecha de entrega y saldo pendiente
+```
+
+#### HU-14: Liquidación de Saldo en Caja
+
+**Como** CAJERO, **quiero** liquidar el saldo restante y entregar el pedido **para** cerrar la venta en tienda.
+
+**AC-014.1** — Camino feliz: liquidación y entrega
+```gherkin
+Given un pedido en "LISTO_PARA_ENTREGA" con total 75000 y montoAbonado 37500
+When el CAJERO registra un pago de 37500 y marca el pedido como "ENTREGADO"
+Then el sistema debe actualizar montoAbonado a 75000, registrar el pedido como "ENTREGADO" y mostrar el mensaje "Pedido entregado exitosamente"
+```
+
+**AC-014.2** — Caso de error: entrega con saldo pendiente
+```gherkin
+Given un pedido en "LISTO_PARA_ENTREGA" con total 75000 y montoAbonado 37500
+When el CAJERO intenta marcar el pedido como "ENTREGADO" sin registrar el saldo restante
+Then el sistema debe mostrar el mensaje "El pedido tiene saldo pendiente de 37500" y el pedido debe permanecer en "LISTO_PARA_ENTREGA"
+```
+
+### 10.7 Resumen de Cobertura Sprint 2
+
+| Historia de Usuario | Criterios de Aceptación | Requisitos | Reglas |
+|---------------------|-------------------------|------------|--------|
+| HU-08: Pedido catálogo/personalizado | AC-008.1, AC-008.2, AC-008.3, AC-008.4, AC-008.5 | REQ-CAKE-013, REQ-CAKE-014 | BR-06 |
+| HU-09: Cálculo y registro de abono | AC-009.1, AC-009.2 | REQ-CAKE-015 | — |
+| HU-10: Validación de abono por CAJERO | AC-010.1, AC-010.2, AC-010.3 | REQ-CAKE-016 | BR-07 |
+| HU-11: Panel KDS del PASTELERO | AC-011.1 | REQ-CAKE-017 | — |
+| HU-12: Cambio de estado y descuento | AC-012.1, AC-012.2 | REQ-CAKE-018, REQ-CAKE-019 | BR-08, BR-09 |
+| HU-13: Seguimiento para CLIENTE | AC-013.1 | REQ-CAKE-020 | — |
+| HU-14: Liquidación de saldo en caja | AC-014.1, AC-014.2 | REQ-CAKE-021 | BR-10 |
+| **Total Sprint 2** | **16 criterios de aceptación** | **9 requisitos** | **5 reglas** |
+
+### 10.8 Trazabilidad de Reglas de Negocio Sprint 2
+
+| Regla de Negocio | Requisitos Asociados | Criterios de Aceptación |
+|------------------|---------------------|-------------------------|
+| BR-06: Personalizado con 24 h de anticipación | REQ-CAKE-013 | AC-008.1, AC-008.2 |
+| BR-07: Abono validado >= 50 % para EN_COLA | REQ-CAKE-016 | AC-010.1, AC-010.2, AC-010.3 |
+| BR-08: Descuento de inventario al iniciar preparación | REQ-CAKE-018 | AC-012.1 |
+| BR-09: Bloqueo por stock insuficiente | REQ-CAKE-019 | AC-012.2 |
+| BR-10: Sin ENTREGADO con saldo pendiente | REQ-CAKE-021 | AC-014.1, AC-014.2 |
+
+### 10.9 Supuestos y Decisiones
+
+- **Supuesto**: el precio unitario se copia del producto al crear el pedido. Cambios posteriores de precio no alteran pedidos existentes.
+- **Supuesto**: la regla de 24 horas (BR-06) aplica solo a pedidos personalizados. Los pedidos de catálogo no la requieren.
+- **Supuesto**: el saldo se calcula como `total - montoAbonado`. El abono mínimo (50 %) se evalúa sobre el monto validado por el CAJERO.
+- **Decisión tomada**: el CAJERO puede crear pedidos en mostrador además del CLIENTE.
+- **Decisión tomada**: el total de un pedido personalizado sin productos lo fija el CAJERO. Debe ser mayor que cero (AC-008.4, AC-008.5).
+- **Decisión tomada**: el código de pedido es `CT-AAAA-NNNN`, donde `NNNN` es el `id` del pedido con cuatro dígitos (por ejemplo, `CT-2026-0042`). No reinicia cada año y se asigna tras insertar el registro.
+- **Decisión tomada**: la cancelación queda fuera del Sprint 2 (ver 10.2).
+
+---
+
+**Fin del documento — SPEC-CAKETRACK-001 v1.0 (Sprint 1) / SPEC-CAKETRACK-001-S2 v2.0 (Sprint 2)**

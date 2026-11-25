@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Validación de abonos')}"></head>
+<body class="bg-light">
+<div th:replace="~{fragments/layout :: anuncio}"></div>
+<div th:replace="~{fragments/layout :: navbar}"></div>
+<main class="container py-4">
+    <p class="etiqueta">Caja</p>
+    <h1 class="h3 mb-3">Validación de abonos</h1>
+
+    <div class="alert alert-success" th:if="${mensaje}" th:text="${mensaje}">Mensaje</div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}">Error</div>
+
+    <div class="card mb-3" th:each="p : ${pedidos}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                <div>
+                    <h2 class="h5 mb-1" th:text="${p.codigoPedido}">CT-2026-0001</h2>
+                    <span class="badge bg-info text-dark me-1" th:if="${p.esPersonalizado}">Personalizado</span>
+                    <span class="badge bg-secondary" th:unless="${p.esPersonalizado}">Catálogo</span>
+                </div>
+                <div class="text-end small">
+                    <div th:text="${p.cliente.nombre}">Cliente</div>
+                    <div class="text-muted" th:text="${#temporals.format(p.fechaEntrega, 'dd/MM/yyyy HH:mm')}">Entrega</div>
+                </div>
+            </div>
+
+            <ul class="list-unstyled small mb-3">
+                <li>Total: <strong th:text="${#numbers.formatDecimal(p.total, 1, 'POINT', 0, 'COMMA')}">0</strong></li>
+                <li>Abonado: <span th:text="${#numbers.formatDecimal(p.montoAbonado, 1, 'POINT', 0, 'COMMA')}">0</span></li>
+                <li>Abono mínimo (50 %): <span th:text="${#numbers.formatDecimal(p.abonoMinimoRequerido, 1, 'POINT', 0, 'COMMA')}">0</span></li>
+                <li>Saldo pendiente: <span th:text="${#numbers.formatDecimal(p.saldoPendiente, 1, 'POINT', 0, 'COMMA')}">0</span></li>
+                <li th:if="${p.referenciaPago}">Referencia: <span th:text="${p.referenciaPago}">NEQUI</span></li>
+            </ul>
+
+            <form class="row g-2 align-items-end mb-2" th:if="${p.esPersonalizado and p.total.signum() == 0}"
+                  th:action="@{/caja/pedidos/{id}/total(id=${p.id})}" method="post">
+                <div class="col-8">
+                    <label class="form-label small" th:for="'total-' + ${p.id}">Total del pedido (COP)</label>
+                    <input type="number" min="1" step="1" class="form-control form-control-sm"
+                           th:id="'total-' + ${p.id}" name="total" required>
+                </div>
+                <div class="col-4">
+                    <button type="submit" class="btn btn-sm btn-outline-primary w-100">Fijar total</button>
+                </div>
+            </form>
+
+            <form class="row g-2 align-items-end mb-2" th:if="${p.total.signum() > 0}"
+                  th:action="@{/caja/pedidos/{id}/abono(id=${p.id})}" method="post">
+                <div class="col-5">
+                    <label class="form-label small" th:for="'monto-' + ${p.id}">Monto abonado</label>
+                    <input type="number" min="1" step="1" class="form-control form-control-sm"
+                           th:id="'monto-' + ${p.id}" name="monto" required>
+                </div>
+                <div class="col-4">
+                    <label class="form-label small" th:for="'ref-' + ${p.id}">Referencia de pago</label>
+                    <input type="text" class="form-control form-control-sm"
+                           th:id="'ref-' + ${p.id}" name="referenciaPago" maxlength="100" required>
+                </div>
+                <div class="col-3">
+                    <button type="submit" class="btn btn-sm btn-outline-primary w-100">Registrar abono</button>
+                </div>
+            </form>
+
+            <form th:if="${p.total.signum() > 0}" th:action="@{/caja/pedidos/{id}/validar-abono(id=${p.id})}" method="post">
+                <button type="submit" class="btn btn-sm btn-outline-primary">Validar abono y enviar a cocina</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="alert alert-light border" th:if="${#lists.isEmpty(pedidos)}">
+        No hay pedidos pendientes de abono.
+    </div>
+</main>
+<div th:replace="~{fragments/layout :: pie}"></div>
+</body>
+</html>

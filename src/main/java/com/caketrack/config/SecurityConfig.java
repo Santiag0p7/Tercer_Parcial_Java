@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .requestMatchers("/caja/**").hasAnyRole("CAJERO", "ADMIN")
                 .requestMatchers("/cocina/**").hasAnyRole("PASTELERO", "ADMIN")
                 .requestMatchers("/domicilios/**").hasAnyRole("REPARTIDOR", "ADMIN")
+                .requestMatchers("/pedidos/**").hasAnyRole("CLIENTE", "CAJERO", "ADMIN")
                 .requestMatchers("/inicio", "/catalogo/**", "/mis-pedidos/**").authenticated()
                 .anyRequest().authenticated())
             .formLogin(form -> form
